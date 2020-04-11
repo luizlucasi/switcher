@@ -1,0 +1,11 @@
+id;band_meter;in_use
+1;BAND15;false
+2;BAND40;false
+3;BAND40;false
+4;BAND15;true
+5;BAND10;true
+6;BAND40;false
+7;BAND15;true
+8;BAND20;false
+9;BAND20;true
+10;BAND15;false
