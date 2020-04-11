@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <!--
+        Added the constraints for entity Command.
+    -->
+    <changeSet id="20200411170000-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="radio_id"
+                                 baseTableName="command"
+                                 constraintName="fk_command_radio_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="radio"/>
+
+        <addForeignKeyConstraint baseColumnNames="command_id"
+                                 baseTableName="command_band"
+                                 constraintName="fk_command_band_command_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="command"/>
+
+        <addForeignKeyConstraint baseColumnNames="band_id"
+                                 baseTableName="command_band"
+                                 constraintName="fk_command_band_band_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="band"/>
+        
+    </changeSet>
+</databaseChangeLog>

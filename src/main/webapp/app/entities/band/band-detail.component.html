@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="band">
+            <h2><span>Band</span> {{ band.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span>Band Meter</span></dt>
+                <dd>
+                    <span>{{ band.bandMeter }}</span>
+                </dd>
+                <dt><span>In Use</span></dt>
+                <dd>
+                    <span>{{ band.inUse }}</span>
+                </dd>
+                <dt><span>Antenna</span></dt>
+                <dd>
+                    <div *ngIf="band.antenna">
+                        <a [routerLink]="['/antenna', band.antenna?.id, 'view']">{{ band.antenna?.id }}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/band', band.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
