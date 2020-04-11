@@ -1,0 +1,61 @@
+
+
+DEFAULT_MIN_LENGTH = 4
+DEFAULT_MAX_LENGTH = 100
+
+enum BandMeter {
+   BAND160, BAND80, BAND40, BAND20, BAND15, BAND10
+}
+
+entity Radio {
+  nome String required 
+
+}
+
+entity Command {
+  nome String required 
+  inUse Boolean
+
+}
+
+entity Band {
+	
+	bandMeter BandMeter 
+	
+	inUse Boolean 
+	
+
+}
+
+entity Antenna {
+    nome String
+	
+	inUse Boolean 
+
+}
+
+
+
+
+relationship OneToOne {
+  Command{radio(nome)} to Radio
+}
+
+relationship ManyToMany {
+  Command{band(name)} to Band{command}
+}
+
+
+relationship ManyToOne {
+  Band{antenna} to Antenna
+
+}
+
+
+
+
+filter Command, Band, Operator, Antenna
+
+paginate Command with pagination
+
+service all with serviceImpl
