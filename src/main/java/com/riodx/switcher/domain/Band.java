@@ -1,7 +1,6 @@
 package com.riodx.switcher.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
@@ -31,10 +30,6 @@ public class Band implements Serializable {
 
     @Column(name = "in_use")
     private Boolean inUse;
-
-    @ManyToOne
-    @JsonIgnoreProperties("bands")
-    private Antenna antenna;
 
     @ManyToMany(mappedBy = "bands")
     @JsonIgnore
@@ -73,19 +68,6 @@ public class Band implements Serializable {
 
     public void setInUse(Boolean inUse) {
         this.inUse = inUse;
-    }
-
-    public Antenna getAntenna() {
-        return antenna;
-    }
-
-    public Band antenna(Antenna antenna) {
-        this.antenna = antenna;
-        return this;
-    }
-
-    public void setAntenna(Antenna antenna) {
-        this.antenna = antenna;
     }
 
     public Set<Command> getCommands() {

@@ -1,7 +1,7 @@
 package com.riodx.switcher.web.rest;
 
 import com.riodx.switcher.domain.Antenna;
-import com.riodx.switcher.service.AntennaService;
+import com.riodx.switcher.repository.AntennaRepository;
 import com.riodx.switcher.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -22,6 +23,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class AntennaResource {
 
     private final Logger log = LoggerFactory.getLogger(AntennaResource.class);
@@ -31,10 +33,10 @@ public class AntennaResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final AntennaService antennaService;
+    private final AntennaRepository antennaRepository;
 
-    public AntennaResource(AntennaService antennaService) {
-        this.antennaService = antennaService;
+    public AntennaResource(AntennaRepository antennaRepository) {
+        this.antennaRepository = antennaRepository;
     }
 
     /**
@@ -50,7 +52,7 @@ public class AntennaResource {
         if (antenna.getId() != null) {
             throw new BadRequestAlertException("A new antenna cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Antenna result = antennaService.save(antenna);
+        Antenna result = antennaRepository.save(antenna);
         return ResponseEntity.created(new URI("/api/antennas/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -71,7 +73,7 @@ public class AntennaResource {
         if (antenna.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Antenna result = antennaService.save(antenna);
+        Antenna result = antennaRepository.save(antenna);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, antenna.getId().toString()))
             .body(result);
@@ -85,7 +87,7 @@ public class AntennaResource {
     @GetMapping("/antennas")
     public List<Antenna> getAllAntennas() {
         log.debug("REST request to get all Antennas");
-        return antennaService.findAll();
+        return antennaRepository.findAll();
     }
 
     /**
@@ -97,7 +99,7 @@ public class AntennaResource {
     @GetMapping("/antennas/{id}")
     public ResponseEntity<Antenna> getAntenna(@PathVariable Long id) {
         log.debug("REST request to get Antenna : {}", id);
-        Optional<Antenna> antenna = antennaService.findOne(id);
+        Optional<Antenna> antenna = antennaRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(antenna);
     }
 
@@ -110,7 +112,7 @@ public class AntennaResource {
     @DeleteMapping("/antennas/{id}")
     public ResponseEntity<Void> deleteAntenna(@PathVariable Long id) {
         log.debug("REST request to delete Antenna : {}", id);
-        antennaService.delete(id);
+        antennaRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

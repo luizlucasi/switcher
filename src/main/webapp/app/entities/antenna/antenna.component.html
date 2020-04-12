@@ -25,6 +25,8 @@
                     <th scope="col" ><span>ID</span></th>
                     <th scope="col" ><span>Nome</span></th>
                     <th scope="col" ><span>In Use</span></th>
+                    <th scope="col" ><span>Band Meter</span></th>
+                    <th scope="col" ><span>Band</span></th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -33,6 +35,12 @@
                     <td><a [routerLink]="['/antenna', antenna.id, 'view']">{{ antenna.id }}</a></td>
                     <td>{{ antenna.nome }}</td>
                     <td>{{ antenna.inUse }}</td>
+                    <td>{{ antenna.bandMeter }}</td>
+                    <td>
+                        <div *ngIf="antenna.band">
+                            <a [routerLink]="['/band', antenna.band?.id, 'view']" >{{ antenna.band?.id }}</a>
+                        </div>
+                    </td>
                     <td class="text-right">
                         <div class="btn-group">
                             <button type="submit"

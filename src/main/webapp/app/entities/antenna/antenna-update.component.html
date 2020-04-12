@@ -22,6 +22,26 @@
                     <input type="checkbox" class="form-control" name="inUse" id="field_inUse"
                            formControlName="inUse"/>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_bandMeter">Band Meter</label>
+                    <select class="form-control" name="bandMeter" formControlName="bandMeter" id="field_bandMeter">
+                        <option value="BAND160">BAND160</option>
+                        <option value="BAND80">BAND80</option>
+                        <option value="BAND40">BAND40</option>
+                        <option value="BAND20">BAND20</option>
+                        <option value="BAND15">BAND15</option>
+                        <option value="BAND10">BAND10</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_band">Band</label>
+                    <select class="form-control" id="field_band" name="band" formControlName="band">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="bandOption.id === editForm.get('band')!.value?.id ? editForm.get('band')!.value : bandOption" *ngFor="let bandOption of bands; trackBy: trackById">{{ bandOption.id }}</option>
+                    </select>
+                </div>
             </div>
 
             <div>

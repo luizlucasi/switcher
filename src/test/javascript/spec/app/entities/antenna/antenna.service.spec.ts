@@ -2,6 +2,7 @@ import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AntennaService } from 'app/entities/antenna/antenna.service';
 import { IAntenna, Antenna } from 'app/shared/model/antenna.model';
+import { BandMeter } from 'app/shared/model/enumerations/band-meter.model';
 
 describe('Service Tests', () => {
   describe('Antenna Service', () => {
@@ -20,7 +21,7 @@ describe('Service Tests', () => {
       service = injector.get(AntennaService);
       httpMock = injector.get(HttpTestingController);
 
-      elemDefault = new Antenna(0, 'AAAAAAA', false);
+      elemDefault = new Antenna(0, 'AAAAAAA', false, BandMeter.BAND160);
     });
 
     describe('Service methods', () => {
@@ -55,7 +56,8 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             nome: 'BBBBBB',
-            inUse: true
+            inUse: true,
+            bandMeter: 'BBBBBB'
           },
           elemDefault
         );
@@ -73,7 +75,8 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             nome: 'BBBBBB',
-            inUse: true
+            inUse: true,
+            bandMeter: 'BBBBBB'
           },
           elemDefault
         );

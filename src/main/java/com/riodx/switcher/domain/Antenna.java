@@ -1,10 +1,13 @@
 package com.riodx.switcher.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.riodx.switcher.domain.enumeration.BandMeter;
 
 /**
  * A Antenna.
@@ -24,6 +27,14 @@ public class Antenna implements Serializable {
 
     @Column(name = "in_use")
     private Boolean inUse;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "band_meter")
+    private BandMeter bandMeter;
+
+    @ManyToOne
+    @JsonIgnoreProperties("antennas")
+    private Band band;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -59,6 +70,32 @@ public class Antenna implements Serializable {
     public void setInUse(Boolean inUse) {
         this.inUse = inUse;
     }
+
+    public BandMeter getBandMeter() {
+        return bandMeter;
+    }
+
+    public Antenna bandMeter(BandMeter bandMeter) {
+        this.bandMeter = bandMeter;
+        return this;
+    }
+
+    public void setBandMeter(BandMeter bandMeter) {
+        this.bandMeter = bandMeter;
+    }
+
+    public Band getBand() {
+        return band;
+    }
+
+    public Antenna band(Band band) {
+        this.band = band;
+        return this;
+    }
+
+    public void setBand(Band band) {
+        this.band = band;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -83,6 +120,7 @@ public class Antenna implements Serializable {
             "id=" + getId() +
             ", nome='" + getNome() + "'" +
             ", inUse='" + isInUse() + "'" +
+            ", bandMeter='" + getBandMeter() + "'" +
             "}";
     }
 }
