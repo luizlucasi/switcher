@@ -13,13 +13,6 @@
     ],
     "relationships": [
         {
-            "relationshipType": "many-to-one",
-            "otherEntityName": "antenna",
-            "otherEntityRelationshipName": "band",
-            "relationshipName": "antenna",
-            "otherEntityField": "id"
-        },
-        {
             "relationshipType": "many-to-many",
             "otherEntityName": "command",
             "otherEntityRelationshipName": "band",
@@ -32,7 +25,7 @@
     "entityTableName": "band",
     "dto": "no",
     "pagination": "no",
-    "service": "serviceImpl",
+    "service": "no",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "readOnly": false,

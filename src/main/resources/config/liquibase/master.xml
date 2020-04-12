@@ -21,5 +21,6 @@
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20200411170000_added_entity_constraints_Command.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200411170100_added_entity_constraints_Band.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200411170200_added_entity_constraints_Antenna.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

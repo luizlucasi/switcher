@@ -7,6 +7,8 @@ import { Observable } from 'rxjs';
 
 import { IAntenna, Antenna } from 'app/shared/model/antenna.model';
 import { AntennaService } from './antenna.service';
+import { IBand } from 'app/shared/model/band.model';
+import { BandService } from 'app/entities/band/band.service';
 
 @Component({
   selector: 'jhi-antenna-update',
@@ -14,18 +16,28 @@ import { AntennaService } from './antenna.service';
 })
 export class AntennaUpdateComponent implements OnInit {
   isSaving = false;
+  bands: IBand[] = [];
 
   editForm = this.fb.group({
     id: [],
     nome: [],
-    inUse: []
+    inUse: [],
+    bandMeter: [],
+    band: []
   });
 
-  constructor(protected antennaService: AntennaService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder) {}
+  constructor(
+    protected antennaService: AntennaService,
+    protected bandService: BandService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ antenna }) => {
       this.updateForm(antenna);
+
+      this.bandService.query().subscribe((res: HttpResponse<IBand[]>) => (this.bands = res.body || []));
     });
   }
 
@@ -33,7 +45,9 @@ export class AntennaUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: antenna.id,
       nome: antenna.nome,
-      inUse: antenna.inUse
+      inUse: antenna.inUse,
+      bandMeter: antenna.bandMeter,
+      band: antenna.band
     });
   }
 
@@ -56,7 +70,9 @@ export class AntennaUpdateComponent implements OnInit {
       ...new Antenna(),
       id: this.editForm.get(['id'])!.value,
       nome: this.editForm.get(['nome'])!.value,
-      inUse: this.editForm.get(['inUse'])!.value
+      inUse: this.editForm.get(['inUse'])!.value,
+      bandMeter: this.editForm.get(['bandMeter'])!.value,
+      band: this.editForm.get(['band'])!.value
     };
   }
 
@@ -74,5 +90,9 @@ export class AntennaUpdateComponent implements OnInit {
 
   protected onSaveError(): void {
     this.isSaving = false;
+  }
+
+  trackById(index: number, item: IBand): any {
+    return item.id;
   }
 }

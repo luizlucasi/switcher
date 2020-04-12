@@ -3,7 +3,6 @@ package com.riodx.switcher.web.rest;
 import com.riodx.switcher.SwitcherApp;
 import com.riodx.switcher.domain.Antenna;
 import com.riodx.switcher.repository.AntennaRepository;
-import com.riodx.switcher.service.AntennaService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.riodx.switcher.domain.enumeration.BandMeter;
 /**
  * Integration tests for the {@link AntennaResource} REST controller.
  */
@@ -37,11 +37,11 @@ public class AntennaResourceIT {
     private static final Boolean DEFAULT_IN_USE = false;
     private static final Boolean UPDATED_IN_USE = true;
 
-    @Autowired
-    private AntennaRepository antennaRepository;
+    private static final BandMeter DEFAULT_BAND_METER = BandMeter.BAND160;
+    private static final BandMeter UPDATED_BAND_METER = BandMeter.BAND80;
 
     @Autowired
-    private AntennaService antennaService;
+    private AntennaRepository antennaRepository;
 
     @Autowired
     private EntityManager em;
@@ -60,7 +60,8 @@ public class AntennaResourceIT {
     public static Antenna createEntity(EntityManager em) {
         Antenna antenna = new Antenna()
             .nome(DEFAULT_NOME)
-            .inUse(DEFAULT_IN_USE);
+            .inUse(DEFAULT_IN_USE)
+            .bandMeter(DEFAULT_BAND_METER);
         return antenna;
     }
     /**
@@ -72,7 +73,8 @@ public class AntennaResourceIT {
     public static Antenna createUpdatedEntity(EntityManager em) {
         Antenna antenna = new Antenna()
             .nome(UPDATED_NOME)
-            .inUse(UPDATED_IN_USE);
+            .inUse(UPDATED_IN_USE)
+            .bandMeter(UPDATED_BAND_METER);
         return antenna;
     }
 
@@ -98,6 +100,7 @@ public class AntennaResourceIT {
         Antenna testAntenna = antennaList.get(antennaList.size() - 1);
         assertThat(testAntenna.getNome()).isEqualTo(DEFAULT_NOME);
         assertThat(testAntenna.isInUse()).isEqualTo(DEFAULT_IN_USE);
+        assertThat(testAntenna.getBandMeter()).isEqualTo(DEFAULT_BAND_METER);
     }
 
     @Test
@@ -132,7 +135,8 @@ public class AntennaResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(antenna.getId().intValue())))
             .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME)))
-            .andExpect(jsonPath("$.[*].inUse").value(hasItem(DEFAULT_IN_USE.booleanValue())));
+            .andExpect(jsonPath("$.[*].inUse").value(hasItem(DEFAULT_IN_USE.booleanValue())))
+            .andExpect(jsonPath("$.[*].bandMeter").value(hasItem(DEFAULT_BAND_METER.toString())));
     }
     
     @Test
@@ -147,7 +151,8 @@ public class AntennaResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(antenna.getId().intValue()))
             .andExpect(jsonPath("$.nome").value(DEFAULT_NOME))
-            .andExpect(jsonPath("$.inUse").value(DEFAULT_IN_USE.booleanValue()));
+            .andExpect(jsonPath("$.inUse").value(DEFAULT_IN_USE.booleanValue()))
+            .andExpect(jsonPath("$.bandMeter").value(DEFAULT_BAND_METER.toString()));
     }
 
     @Test
@@ -162,7 +167,7 @@ public class AntennaResourceIT {
     @Transactional
     public void updateAntenna() throws Exception {
         // Initialize the database
-        antennaService.save(antenna);
+        antennaRepository.saveAndFlush(antenna);
 
         int databaseSizeBeforeUpdate = antennaRepository.findAll().size();
 
@@ -172,7 +177,8 @@ public class AntennaResourceIT {
         em.detach(updatedAntenna);
         updatedAntenna
             .nome(UPDATED_NOME)
-            .inUse(UPDATED_IN_USE);
+            .inUse(UPDATED_IN_USE)
+            .bandMeter(UPDATED_BAND_METER);
 
         restAntennaMockMvc.perform(put("/api/antennas")
             .contentType(MediaType.APPLICATION_JSON)
@@ -185,6 +191,7 @@ public class AntennaResourceIT {
         Antenna testAntenna = antennaList.get(antennaList.size() - 1);
         assertThat(testAntenna.getNome()).isEqualTo(UPDATED_NOME);
         assertThat(testAntenna.isInUse()).isEqualTo(UPDATED_IN_USE);
+        assertThat(testAntenna.getBandMeter()).isEqualTo(UPDATED_BAND_METER);
     }
 
     @Test
@@ -209,7 +216,7 @@ public class AntennaResourceIT {
     @Transactional
     public void deleteAntenna() throws Exception {
         // Initialize the database
-        antennaService.save(antenna);
+        antennaRepository.saveAndFlush(antenna);
 
         int databaseSizeBeforeDelete = antennaRepository.findAll().size();
 

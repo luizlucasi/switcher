@@ -1,7 +1,7 @@
 package com.riodx.switcher.web.rest;
 
 import com.riodx.switcher.domain.Band;
-import com.riodx.switcher.service.BandService;
+import com.riodx.switcher.repository.BandRepository;
 import com.riodx.switcher.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -22,6 +23,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class BandResource {
 
     private final Logger log = LoggerFactory.getLogger(BandResource.class);
@@ -31,10 +33,10 @@ public class BandResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final BandService bandService;
+    private final BandRepository bandRepository;
 
-    public BandResource(BandService bandService) {
-        this.bandService = bandService;
+    public BandResource(BandRepository bandRepository) {
+        this.bandRepository = bandRepository;
     }
 
     /**
@@ -50,7 +52,7 @@ public class BandResource {
         if (band.getId() != null) {
             throw new BadRequestAlertException("A new band cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Band result = bandService.save(band);
+        Band result = bandRepository.save(band);
         return ResponseEntity.created(new URI("/api/bands/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -71,7 +73,7 @@ public class BandResource {
         if (band.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Band result = bandService.save(band);
+        Band result = bandRepository.save(band);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, band.getId().toString()))
             .body(result);
@@ -85,7 +87,7 @@ public class BandResource {
     @GetMapping("/bands")
     public List<Band> getAllBands() {
         log.debug("REST request to get all Bands");
-        return bandService.findAll();
+        return bandRepository.findAll();
     }
 
     /**
@@ -97,7 +99,7 @@ public class BandResource {
     @GetMapping("/bands/{id}")
     public ResponseEntity<Band> getBand(@PathVariable Long id) {
         log.debug("REST request to get Band : {}", id);
-        Optional<Band> band = bandService.findOne(id);
+        Optional<Band> band = bandRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(band);
     }
 
@@ -110,7 +112,7 @@ public class BandResource {
     @DeleteMapping("/bands/{id}")
     public ResponseEntity<Void> deleteBand(@PathVariable Long id) {
         log.debug("REST request to delete Band : {}", id);
-        bandService.delete(id);
+        bandRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

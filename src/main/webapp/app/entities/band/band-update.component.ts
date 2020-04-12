@@ -7,8 +7,6 @@ import { Observable } from 'rxjs';
 
 import { IBand, Band } from 'app/shared/model/band.model';
 import { BandService } from './band.service';
-import { IAntenna } from 'app/shared/model/antenna.model';
-import { AntennaService } from 'app/entities/antenna/antenna.service';
 
 @Component({
   selector: 'jhi-band-update',
@@ -16,27 +14,18 @@ import { AntennaService } from 'app/entities/antenna/antenna.service';
 })
 export class BandUpdateComponent implements OnInit {
   isSaving = false;
-  antennas: IAntenna[] = [];
 
   editForm = this.fb.group({
     id: [],
     bandMeter: [],
-    inUse: [],
-    antenna: []
+    inUse: []
   });
 
-  constructor(
-    protected bandService: BandService,
-    protected antennaService: AntennaService,
-    protected activatedRoute: ActivatedRoute,
-    private fb: FormBuilder
-  ) {}
+  constructor(protected bandService: BandService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ band }) => {
       this.updateForm(band);
-
-      this.antennaService.query().subscribe((res: HttpResponse<IAntenna[]>) => (this.antennas = res.body || []));
     });
   }
 
@@ -44,8 +33,7 @@ export class BandUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: band.id,
       bandMeter: band.bandMeter,
-      inUse: band.inUse,
-      antenna: band.antenna
+      inUse: band.inUse
     });
   }
 
@@ -68,8 +56,7 @@ export class BandUpdateComponent implements OnInit {
       ...new Band(),
       id: this.editForm.get(['id'])!.value,
       bandMeter: this.editForm.get(['bandMeter'])!.value,
-      inUse: this.editForm.get(['inUse'])!.value,
-      antenna: this.editForm.get(['antenna'])!.value
+      inUse: this.editForm.get(['inUse'])!.value
     };
   }
 
@@ -87,9 +74,5 @@ export class BandUpdateComponent implements OnInit {
 
   protected onSaveError(): void {
     this.isSaving = false;
-  }
-
-  trackById(index: number, item: IAntenna): any {
-    return item.id;
   }
 }

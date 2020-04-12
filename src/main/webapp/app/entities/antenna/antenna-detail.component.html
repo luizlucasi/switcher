@@ -16,6 +16,16 @@
                 <dd>
                     <span>{{ antenna.inUse }}</span>
                 </dd>
+                <dt><span>Band Meter</span></dt>
+                <dd>
+                    <span>{{ antenna.bandMeter }}</span>
+                </dd>
+                <dt><span>Band</span></dt>
+                <dd>
+                    <div *ngIf="antenna.band">
+                        <a [routerLink]="['/band', antenna.band?.id, 'view']">{{ antenna.band?.id }}</a>
+                    </div>
+                </dd>
             </dl>
 
             <button type="submit"

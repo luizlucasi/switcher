@@ -3,7 +3,6 @@ package com.riodx.switcher.web.rest;
 import com.riodx.switcher.SwitcherApp;
 import com.riodx.switcher.domain.Command;
 import com.riodx.switcher.repository.CommandRepository;
-import com.riodx.switcher.service.CommandService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,12 +48,6 @@ public class CommandResourceIT {
 
     @Mock
     private CommandRepository commandRepositoryMock;
-
-    @Mock
-    private CommandService commandServiceMock;
-
-    @Autowired
-    private CommandService commandService;
 
     @Autowired
     private EntityManager em;
@@ -168,22 +161,24 @@ public class CommandResourceIT {
     
     @SuppressWarnings({"unchecked"})
     public void getAllCommandsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(commandServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        CommandResource commandResource = new CommandResource(commandRepositoryMock);
+        when(commandRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restCommandMockMvc.perform(get("/api/commands?eagerload=true"))
             .andExpect(status().isOk());
 
-        verify(commandServiceMock, times(1)).findAllWithEagerRelationships(any());
+        verify(commandRepositoryMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @SuppressWarnings({"unchecked"})
     public void getAllCommandsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(commandServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        CommandResource commandResource = new CommandResource(commandRepositoryMock);
+        when(commandRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restCommandMockMvc.perform(get("/api/commands?eagerload=true"))
             .andExpect(status().isOk());
 
-        verify(commandServiceMock, times(1)).findAllWithEagerRelationships(any());
+        verify(commandRepositoryMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
@@ -213,7 +208,7 @@ public class CommandResourceIT {
     @Transactional
     public void updateCommand() throws Exception {
         // Initialize the database
-        commandService.save(command);
+        commandRepository.saveAndFlush(command);
 
         int databaseSizeBeforeUpdate = commandRepository.findAll().size();
 
@@ -260,7 +255,7 @@ public class CommandResourceIT {
     @Transactional
     public void deleteCommand() throws Exception {
         // Initialize the database
-        commandService.save(command);
+        commandRepository.saveAndFlush(command);
 
         int databaseSizeBeforeDelete = commandRepository.findAll().size();
 

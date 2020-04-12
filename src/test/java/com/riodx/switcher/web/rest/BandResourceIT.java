@@ -3,7 +3,6 @@ package com.riodx.switcher.web.rest;
 import com.riodx.switcher.SwitcherApp;
 import com.riodx.switcher.domain.Band;
 import com.riodx.switcher.repository.BandRepository;
-import com.riodx.switcher.service.BandService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,9 +39,6 @@ public class BandResourceIT {
 
     @Autowired
     private BandRepository bandRepository;
-
-    @Autowired
-    private BandService bandService;
 
     @Autowired
     private EntityManager em;
@@ -163,7 +159,7 @@ public class BandResourceIT {
     @Transactional
     public void updateBand() throws Exception {
         // Initialize the database
-        bandService.save(band);
+        bandRepository.saveAndFlush(band);
 
         int databaseSizeBeforeUpdate = bandRepository.findAll().size();
 
@@ -210,7 +206,7 @@ public class BandResourceIT {
     @Transactional
     public void deleteBand() throws Exception {
         // Initialize the database
-        bandService.save(band);
+        bandRepository.saveAndFlush(band);
 
         int databaseSizeBeforeDelete = bandRepository.findAll().size();
 

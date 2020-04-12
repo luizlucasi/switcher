@@ -1,7 +1,7 @@
 package com.riodx.switcher.web.rest;
 
 import com.riodx.switcher.domain.Radio;
-import com.riodx.switcher.service.RadioService;
+import com.riodx.switcher.repository.RadioRepository;
 import com.riodx.switcher.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class RadioResource {
 
     private final Logger log = LoggerFactory.getLogger(RadioResource.class);
@@ -32,10 +34,10 @@ public class RadioResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final RadioService radioService;
+    private final RadioRepository radioRepository;
 
-    public RadioResource(RadioService radioService) {
-        this.radioService = radioService;
+    public RadioResource(RadioRepository radioRepository) {
+        this.radioRepository = radioRepository;
     }
 
     /**
@@ -51,7 +53,7 @@ public class RadioResource {
         if (radio.getId() != null) {
             throw new BadRequestAlertException("A new radio cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Radio result = radioService.save(radio);
+        Radio result = radioRepository.save(radio);
         return ResponseEntity.created(new URI("/api/radios/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +74,7 @@ public class RadioResource {
         if (radio.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Radio result = radioService.save(radio);
+        Radio result = radioRepository.save(radio);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, radio.getId().toString()))
             .body(result);
@@ -86,7 +88,7 @@ public class RadioResource {
     @GetMapping("/radios")
     public List<Radio> getAllRadios() {
         log.debug("REST request to get all Radios");
-        return radioService.findAll();
+        return radioRepository.findAll();
     }
 
     /**
@@ -98,7 +100,7 @@ public class RadioResource {
     @GetMapping("/radios/{id}")
     public ResponseEntity<Radio> getRadio(@PathVariable Long id) {
         log.debug("REST request to get Radio : {}", id);
-        Optional<Radio> radio = radioService.findOne(id);
+        Optional<Radio> radio = radioRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(radio);
     }
 
@@ -111,7 +113,7 @@ public class RadioResource {
     @DeleteMapping("/radios/{id}")
     public ResponseEntity<Void> deleteRadio(@PathVariable Long id) {
         log.debug("REST request to delete Radio : {}", id);
-        radioService.delete(id);
+        radioRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

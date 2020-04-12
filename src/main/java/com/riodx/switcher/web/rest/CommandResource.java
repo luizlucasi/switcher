@@ -1,7 +1,7 @@
 package com.riodx.switcher.web.rest;
 
 import com.riodx.switcher.domain.Command;
-import com.riodx.switcher.service.CommandService;
+import com.riodx.switcher.repository.CommandRepository;
 import com.riodx.switcher.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class CommandResource {
 
     private final Logger log = LoggerFactory.getLogger(CommandResource.class);
@@ -32,10 +34,10 @@ public class CommandResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final CommandService commandService;
+    private final CommandRepository commandRepository;
 
-    public CommandResource(CommandService commandService) {
-        this.commandService = commandService;
+    public CommandResource(CommandRepository commandRepository) {
+        this.commandRepository = commandRepository;
     }
 
     /**
@@ -51,7 +53,7 @@ public class CommandResource {
         if (command.getId() != null) {
             throw new BadRequestAlertException("A new command cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Command result = commandService.save(command);
+        Command result = commandRepository.save(command);
         return ResponseEntity.created(new URI("/api/commands/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +74,7 @@ public class CommandResource {
         if (command.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Command result = commandService.save(command);
+        Command result = commandRepository.save(command);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, command.getId().toString()))
             .body(result);
@@ -87,7 +89,7 @@ public class CommandResource {
     @GetMapping("/commands")
     public List<Command> getAllCommands(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all Commands");
-        return commandService.findAll();
+        return commandRepository.findAllWithEagerRelationships();
     }
 
     /**
@@ -99,7 +101,7 @@ public class CommandResource {
     @GetMapping("/commands/{id}")
     public ResponseEntity<Command> getCommand(@PathVariable Long id) {
         log.debug("REST request to get Command : {}", id);
-        Optional<Command> command = commandService.findOne(id);
+        Optional<Command> command = commandRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(command);
     }
 
@@ -112,7 +114,7 @@ public class CommandResource {
     @DeleteMapping("/commands/{id}")
     public ResponseEntity<Void> deleteCommand(@PathVariable Long id) {
         log.debug("REST request to delete Command : {}", id);
-        commandService.delete(id);
+        commandRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

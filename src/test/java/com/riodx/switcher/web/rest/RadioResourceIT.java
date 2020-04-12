@@ -3,7 +3,6 @@ package com.riodx.switcher.web.rest;
 import com.riodx.switcher.SwitcherApp;
 import com.riodx.switcher.domain.Radio;
 import com.riodx.switcher.repository.RadioRepository;
-import com.riodx.switcher.service.RadioService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,9 +35,6 @@ public class RadioResourceIT {
 
     @Autowired
     private RadioRepository radioRepository;
-
-    @Autowired
-    private RadioService radioService;
 
     @Autowired
     private EntityManager em;
@@ -172,7 +168,7 @@ public class RadioResourceIT {
     @Transactional
     public void updateRadio() throws Exception {
         // Initialize the database
-        radioService.save(radio);
+        radioRepository.saveAndFlush(radio);
 
         int databaseSizeBeforeUpdate = radioRepository.findAll().size();
 
@@ -217,7 +213,7 @@ public class RadioResourceIT {
     @Transactional
     public void deleteRadio() throws Exception {
         // Initialize the database
-        radioService.save(radio);
+        radioRepository.saveAndFlush(radio);
 
         int databaseSizeBeforeDelete = radioRepository.findAll().size();
 
