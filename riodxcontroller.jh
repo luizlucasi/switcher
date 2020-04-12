@@ -11,7 +11,7 @@ entity Radio {
 
 entity Command {
   nome String required 
-  inUse Boolean
+  inUse Boolean 
 
 }
 
@@ -43,10 +43,10 @@ relationship ManyToMany {
 }
 
 
-relationship ManyToOne {
+relationship OneToMany {
   Band{antenna} to Antenna
 
 }
 
 
-service all with serviceImpl
+service all with serviceImp
